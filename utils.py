@@ -134,7 +134,7 @@ def mutation(population, prob):
             population[i][cursor_1], population[i][cursor_2] = population[i][cursor_2], population[i][cursor_1]
 
 
-def plot(d1, d2, title, name):
+def plot(d1, d2, name):
     plt.title(f"Traveling Salesman Problem Fitness Trace ({name})")
     plt.plot(range(len(d1)), np.log(np.array(d1)), label="Log(Fitness), average")
     plt.plot(range(len(d2)), np.log(np.array(d2)), label="Log(Fitness), bestgit add")
