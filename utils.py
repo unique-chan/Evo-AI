@@ -1,5 +1,6 @@
 import random
 
+import copy
 import numpy as np
 import pandas as pd
 import random as rand
@@ -40,7 +41,19 @@ def is_promising_for_salesman(cur, best):
     return True if cur < best else False     # shortest route is better.
 
 
+def store(population, fitnesses, filename='test.txt'):
+    txt = ''
+    for chromosome, fitness in zip(population, fitnesses):
+        txt += f'{chromosome},{fitness:.6f}\n'
+    with open(filename, 'w') as f:
+        f.write(txt)
+
+
 def order_one_crossover(population, prob, num_offsprings=1):
+    '''
+    :param num_offsprings: [1 or 2]
+    :return: crossover result
+    '''
     pop_size, gen_size = len(population[0]), len(population)
     gen_size_half = gen_size // 2
     random.shuffle(population)   # for bias issue
@@ -51,23 +64,23 @@ def order_one_crossover(population, prob, num_offsprings=1):
             # offspring 1
             partial_dad_1 = dad[start_idx:end_idx+1]
             partial_mom_1 = [gene for gene in mom if gene not in partial_dad_1]
-            offspring_1 = [partial_mom_1.pop(0) for _ in range(0, start_idx)] + partial_dad_1 + partial_mom_1
-            population[i] = offspring_1
+            offspring_1 = [partial_mom_1.pop(0) for _ in range(0, min(len(partial_mom_1), start_idx))] + \
+                           partial_dad_1 + partial_mom_1
+            population[i] = offspring_1[:pop_size]
+
             # offspring 2 (If you want to birth another offspring!)
             if num_offsprings >= 2:
                 partial_mom_2 = mom[start_idx:end_idx+1]
                 partial_dad_2 = [gene for gene in dad if gene not in partial_mom_2]
-                offspring_2 = [partial_dad_2.pop(0) for _ in range(0, start_idx)] + partial_mom_2 + partial_dad_2
-                population[i + gen_size_half] = offspring_2
+                offspring_2 = [partial_dad_2.pop(0) for _ in range(0, min(len(partial_dad_2), start_idx))] + \
+                               partial_mom_2 + partial_dad_2
+                population[i + gen_size_half] = offspring_2[:pop_size]
 
-# def selection(mode):
-#     pass
-#
-#
-# def crossover(chromosome1, chromosome2, mode):
-#
-#     pass
-#
-#
-# def mutation(mode):
-#     pass
+
+def mutation(population, prob):
+    pop_size = len(population[0])
+    for i in range(pop_size):
+        if random.random() <= prob:
+            # swap
+            cursor_1, cursor_2 = np.random.choice(list(range(pop_size)), size=2, replace=False)
+            population[i][cursor_1], population[i][cursor_2] = population[i][cursor_2], population[i][cursor_1]
