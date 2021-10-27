@@ -1,3 +1,6 @@
+import random
+
+import numpy as np
 import pandas as pd
 import random as rand
 
@@ -26,7 +29,7 @@ def get_fitness(distance_matrix, chromosome):
     '''
     :param distance_matrix: from read_distance_matrix_from_txt()
     :param chromosome: individual string from init_population(), Here, "chromosome == route for traveling salesman"
-    :return: fitness_score of the current chromsome (route)
+    :return: fitness_score of the current chromosome (route)
     '''
     total_distance = [distance_matrix[chromosome[i-1]][chromosome[i]] for i in range(1, len(chromosome))]
     fitness = sum(total_distance)
@@ -37,16 +40,34 @@ def is_promising_for_salesman(cur, best):
     return True if cur < best else False     # shortest route is better.
 
 
-def
+def order_one_crossover(population, prob, num_offsprings=1):
+    pop_size, gen_size = len(population[0]), len(population)
+    gen_size_half = gen_size // 2
+    random.shuffle(population)   # for bias issue
+    for i in range(gen_size_half):
+        if random.random() <= prob:
+            dad, mom = population[i], population[i + gen_size_half]
+            start_idx, end_idx = sorted(np.random.choice(list(range(pop_size)), size=2, replace=False))
+            # offspring 1
+            partial_dad_1 = dad[start_idx:end_idx+1]
+            partial_mom_1 = [gene for gene in mom if gene not in partial_dad_1]
+            offspring_1 = [partial_mom_1.pop(0) for _ in range(0, start_idx)] + partial_dad_1 + partial_mom_1
+            population[i] = offspring_1
+            # offspring 2 (If you want to birth another offspring!)
+            if num_offsprings >= 2:
+                partial_mom_2 = mom[start_idx:end_idx+1]
+                partial_dad_2 = [gene for gene in dad if gene not in partial_mom_2]
+                offspring_2 = [partial_dad_2.pop(0) for _ in range(0, start_idx)] + partial_mom_2 + partial_dad_2
+                population[i + gen_size_half] = offspring_2
 
-
-def selection(mode):
-    pass
-
-
-def crossover(mode):
-    pass
-
-
-def mutation(mode):
-    pass
+# def selection(mode):
+#     pass
+#
+#
+# def crossover(chromosome1, chromosome2, mode):
+#
+#     pass
+#
+#
+# def mutation(mode):
+#     pass
