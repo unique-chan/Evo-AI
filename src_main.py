@@ -1,5 +1,5 @@
-import os
 import sys
+import random
 import utils
 import numpy as np
 
@@ -17,6 +17,10 @@ elitism_ratio = 0.02
 
 # data
 file = sys.argv[1]
+
+# for replication
+np.random.seed(12)
+random.seed(34)
 
 # initialize
 D = utils.read_distance_matrix_from_txt(file)
@@ -45,7 +49,7 @@ for i in range(gen_size):
     utils.tournament_selection(P, D)
 
     # crossover
-    utils.order_one_crossover(P, crossover_prob, num_offsprings=1)
+    utils.order_one_crossover(P, crossover_prob, num_offsprings=2)
 
     # mutation (re-ordering)
     utils.mutation(P, mutation_prob)

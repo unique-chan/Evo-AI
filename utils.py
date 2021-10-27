@@ -1,5 +1,4 @@
 import random
-
 import numpy as np
 import pandas as pd
 import random as rand
@@ -114,7 +113,7 @@ def mutation(population, prob):
 
 
 def plot(d1, d2, name):
-    plt.title(f"Traveling Salesman Problem Fitness Trace ({name})")
+    plt.title(f"Traveling Salesman Problem Fitness Trace ({name}) \n(avg-best: {d2[-1]:.6f})")
     plt.plot(range(len(d1)), np.log(np.array(d1)), label="Log(Fitness), average")
     plt.plot(range(len(d2)), np.log(np.array(d2)), label="Log(Fitness), best")
     plt.legend()
