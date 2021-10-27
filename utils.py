@@ -43,7 +43,8 @@ def is_promising_for_salesman(cur, best):
 def store(population, fitnesses, filename='test.txt'):
     txt = ''
     for chromosome, fitness in zip(population, fitnesses):
-        txt += f'{chromosome},{fitness:.6f}\n'
+        string = '-'.join(map(str, chromosome))
+        txt += f'{string},{fitness:.6f}\n'
     with open(filename, 'w') as f:
         f.write(txt)
 
@@ -118,4 +119,4 @@ def plot(d1, d2, name):
     plt.plot(range(len(d2)), np.log(np.array(d2)), label="Log(Fitness), best")
     plt.legend()
     plt.savefig(name)
-    plt.show()
+    # plt.show()
