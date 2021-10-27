@@ -49,6 +49,25 @@ def store(population, fitnesses, filename='test.txt'):
         f.write(txt)
 
 
+def elitism(population, fitnesses, elitism_ratio):
+    num_elites = int(len(population) * elitism_ratio)
+    top_ids = sorted(np.arange(len(fitnesses)), key=lambda i: fitnesses[i])[-num_elites:]
+    bottom_ids = sorted(np.arange(len(fitnesses)), key=lambda i: fitnesses[i])[:num_elites]
+
+    for i, (top_id, bottom_id) in enumerate(zip(top_ids, bottom_ids)):
+        population[bottom_id] = population[top_id]
+        population[i], population[top_id] = population[top_id], population[i]
+
+    elite_chromosomes = population[:num_elites]
+    population = population[num_elites:]
+    fitnesses = fitnesses[num_elites:]
+    return elite_chromosomes, population, fitnesses
+
+
+def rank_selection():
+    pass
+
+
 def order_one_crossover(population, prob, num_offsprings=1):
     '''
     :param num_offsprings: [1 or 2]
@@ -66,20 +85,43 @@ def order_one_crossover(population, prob, num_offsprings=1):
             partial_mom_1 = [gene for gene in mom if gene not in partial_dad_1]
             offspring_1 = [partial_mom_1.pop(0) for _ in range(0, min(len(partial_mom_1), start_idx))] + \
                            partial_dad_1 + partial_mom_1
-            population[i] = offspring_1[:pop_size]
-
+            # If pop_size < number of cities, offspring size would not be steady (i.e. pop_size != len(offspring_1)).
+            # => In this case,
+            # 1) repeat randomly removing genes
+            #    until the offspring size equals to the pop_size.  (if pop_size < len(offspring_1)
+            # 2) discard this offspring!                           (if pop_size > len(offspring_1)
+            # (Yechan Kim's Trick)
+            if pop_size < len(offspring_1):
+                size = len(offspring_1) - pop_size
+                mask = sorted(np.random.choice(list(np.arange(len(offspring_1))), size=size, replace=False))
+                for _, m in enumerate(mask):
+                    del offspring_1[m - _]
+            elif pop_size > len(offspring_1):
+                continue
+            population[i] = offspring_1
             # offspring 2 (If you want to birth another offspring!)
             if num_offsprings >= 2:
                 partial_mom_2 = mom[start_idx:end_idx+1]
                 partial_dad_2 = [gene for gene in dad if gene not in partial_mom_2]
                 offspring_2 = [partial_dad_2.pop(0) for _ in range(0, min(len(partial_dad_2), start_idx))] + \
                                partial_mom_2 + partial_dad_2
-                population[i + gen_size_half] = offspring_2[:pop_size]
+                # (Yechan Kim's Trick) (again)
+                if pop_size < len(offspring_2):
+                    size = len(offspring_2) - pop_size
+                    mask = sorted(np.random.choice(list(np.arange(len(offspring_2))), size=size, replace=False))
+                    for _, m in enumerate(mask):
+                        del offspring_2[m - _]
+                elif pop_size > len(offspring_2):
+                    continue
+                population[i + gen_size_half] = offspring_2
 
 
 def mutation(population, prob):
-    pop_size = len(population[0])
-    for i in range(pop_size):
+    '''
+    :return: mutation result
+    '''
+    pop_size, gen_size = len(population[0]), len(population)
+    for i in range(gen_size):
         if random.random() <= prob:
             # swap
             cursor_1, cursor_2 = np.random.choice(list(range(pop_size)), size=2, replace=False)
