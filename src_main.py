@@ -30,7 +30,7 @@ for i in range(gen_size):
     avg_fitness = sum(fitnesses) / len(fitnesses)
     avg_fitnesses.append(avg_fitness)
     if i % 300 == 0:
-        print(f'file {file} \t Iteration {i+1:6d} - avg_fitness: {avg_fitness:.6f} - best: {best:.6f}')
+        print(f'file: {file} \t Iteration {i+1:6d} - avg_fitness: {avg_fitness:.6f} - best: {best:.6f}')
 
     # store the current result if so far best
     if utils.is_promising_for_salesman(avg_fitness, best):
