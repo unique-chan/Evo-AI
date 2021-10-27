@@ -14,6 +14,7 @@ gen_size = 6000
 crossover_prob = 0.9
 mutation_prob = 0.01
 elitism_ratio = 0.02
+num_offsprings_for_crossover = 2  # 1 or 2
 
 # data
 file = sys.argv[1]
@@ -49,7 +50,7 @@ for i in range(gen_size):
     utils.tournament_selection(P, D)
 
     # crossover
-    utils.order_one_crossover(P, crossover_prob, num_offsprings=2)
+    utils.order_one_crossover(P, crossover_prob, num_offsprings=num_offsprings_for_crossover)
 
     # mutation (re-ordering)
     utils.mutation(P, mutation_prob)
