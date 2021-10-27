@@ -8,7 +8,6 @@ python src_main.py [file_path]
 e.g. python src_main.py data(TSP)/data-1.txt
 '''
 
-
 # hyper-parameters
 pop_size = 100
 gen_size = 6000

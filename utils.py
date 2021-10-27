@@ -90,20 +90,6 @@ def order_one_crossover(population, prob, num_offsprings=1):
             partial_mom_1 = [gene for gene in mom if gene not in partial_dad_1]
             offspring_1 = [partial_mom_1.pop(0) for _ in range(0, min(len(partial_mom_1), start_idx))] + \
                            partial_dad_1 + partial_mom_1
-            # If string_length < number of cities, offspring size would not be steady
-            # (i.e. string_length != len(offspring_1)).
-            # => In this case,
-            # 1) repeat randomly removing genes
-            #    until the offspring size equals to the string_length.  (if string_length < len(offspring_1)
-            # 2) discard this offspring!                           (if string_length > len(offspring_1)
-            # (Yechan Kim's Trick)
-            # if string_length < len(offspring_1):
-            #     size = len(offspring_1) - string_length
-            #     mask = sorted(np.random.choice(list(np.arange(len(offspring_1))), size=size, replace=False))
-            #     for _, m in enumerate(mask):
-            #         del offspring_1[m - _]
-            # elif string_length > len(offspring_1):
-            #     continue
             population[i] = offspring_1
             # offspring 2 (If you want to birth another offspring!)
             if num_offsprings >= 2:
@@ -111,14 +97,6 @@ def order_one_crossover(population, prob, num_offsprings=1):
                 partial_dad_2 = [gene for gene in dad if gene not in partial_mom_2]
                 offspring_2 = [partial_dad_2.pop(0) for _ in range(0, min(len(partial_dad_2), start_idx))] + \
                                partial_mom_2 + partial_dad_2
-                # (Yechan Kim's Trick) (again)
-                # if string_length < len(offspring_2):
-                #     size = len(offspring_2) - string_length
-                #     mask = sorted(np.random.choice(list(np.arange(len(offspring_2))), size=size, replace=False))
-                #     for _, m in enumerate(mask):
-                #         del offspring_2[m - _]
-                # elif string_length > len(offspring_2):
-                #     continue
                 population[i + pop_size_half] = offspring_2
 
 
@@ -137,7 +115,7 @@ def mutation(population, prob):
 def plot(d1, d2, name):
     plt.title(f"Traveling Salesman Problem Fitness Trace ({name})")
     plt.plot(range(len(d1)), np.log(np.array(d1)), label="Log(Fitness), average")
-    plt.plot(range(len(d2)), np.log(np.array(d2)), label="Log(Fitness), bestgit add")
+    plt.plot(range(len(d2)), np.log(np.array(d2)), label="Log(Fitness), best")
     plt.legend()
     plt.savefig(name)
     plt.show()
