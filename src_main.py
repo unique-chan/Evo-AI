@@ -55,7 +55,7 @@ for i in range(gen_size):
     # mutation (re-ordering)
     utils.mutation(P, mutation_prob)
 
-    # elitism (2)
+    # elitism (2): elite strings must be alive without being crossover and mutation.
     P += elite_P
 
 # visualization
