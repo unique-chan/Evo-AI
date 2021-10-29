@@ -64,6 +64,18 @@ def elitism(population, fitnesses, elitism_ratio):
     return elite_chromosomes, population, fitnesses
 
 
+def roulette_selection(population, fitnesses):
+    population_size = len(population)
+    selections = []
+    for i in range(population_size):
+        threshold = random.random()
+        j = 0
+        while j < population_size and threshold > sum(fitnesses[:j+1]) / sum(fitnesses):
+            j += 1
+        selections.append(population[j])
+    return selections
+
+
 def tournament_selection(population, distance_matrix):
     pop_size = len(population)
     for i in range(pop_size):
@@ -71,6 +83,7 @@ def tournament_selection(population, distance_matrix):
         f_i, f_pos = get_fitness(distance_matrix, population[i]), get_fitness(distance_matrix, population[pos])
         if is_promising_for_salesman(f_pos, f_i):
             population[i] = population[pos]
+    return population
 
 
 def order_one_crossover(population, prob, num_offsprings=1):
