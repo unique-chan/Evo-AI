@@ -4,8 +4,11 @@ import utils
 import numpy as np
 
 ''' How to run?
-python src_main.py [file_path]
-e.g. python src_main.py data(TSP)/data-1.txt
+1) Install the python libraries as in requirements.txt
+    pip install -r requirements.txt
+2) Then, run the code as follows:
+    python src_main.py [file_path]
+    e.g. python src_main.py data(TSP)/data-1.txt
 '''
 
 # hyper-parameters
@@ -64,7 +67,7 @@ for i in range(gen_size):
 
     #########################################################################################################
     # selection option (B): tournament selection - soft version
-    #                                                   -> [opinion] excellent option for the given dataset!
+    #                                                   -> [opinion] great option for the given dataset!
     # [Note] All the submission results (fitness-*.txt / fitness-*.png) are based on using (B)!
     utils.tournament_selection(P, D, soft_tournament_prob=soft_tournament_prob)
     #########################################################################################################

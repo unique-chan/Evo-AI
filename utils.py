@@ -64,25 +64,25 @@ def elitism(population, fitnesses, elitism_ratio):
     return elite_chromosomes, population, fitnesses
 
 
-def roulette_selection(population, fitnesses, logarithmic_scaling_T=0):
-    '''
-    :param logarithmic_scaling_T:
-           if T <= 0, no logarithmic scaling is applied to the fitnesses (i.e. 'ordinary' roulette selection).
-           otherwise, logarithmic scaling is applied to the fitnesses:
-                      new_fitnesses = exp(fitnesses / T).
-    '''
-    population_size = len(population)
-    new_fitnesses = np.array(fitnesses)
-    if logarithmic_scaling_T > 0:
-        new_fitnesses = np.exp(new_fitnesses / logarithmic_scaling_T)
-    selections = []
-    for i in range(population_size):
-        threshold = random.random()
-        j = 0
-        while j < population_size and threshold > sum(new_fitnesses[:j+1]) / sum(new_fitnesses):
-            j += 1
-        selections.append(population[j])
-    return selections
+# def roulette_selection(population, fitnesses, logarithmic_scaling_T=0):
+#     '''
+#     :param logarithmic_scaling_T:
+#            if T <= 0, no logarithmic scaling is applied to the fitnesses (i.e. 'ordinary' roulette selection).
+#            otherwise, logarithmic scaling is applied to the fitnesses:
+#                       new_fitnesses = exp(fitnesses / T).
+#     '''
+#     population_size = len(population)
+#     new_fitnesses = np.array(fitnesses)
+#     if logarithmic_scaling_T > 0:
+#         new_fitnesses = np.exp(new_fitnesses / logarithmic_scaling_T)
+#     selections = []
+#     for i in range(population_size):
+#         threshold = random.random()
+#         j = 0
+#         while j < population_size and threshold > sum(new_fitnesses[:j+1]) / sum(new_fitnesses):
+#             j += 1
+#         selections.append(population[j])
+#     return selections
 
 
 def tournament_selection(population, distance_matrix, soft_tournament_prob=0):
@@ -105,15 +105,15 @@ def tournament_selection(population, distance_matrix, soft_tournament_prob=0):
     return population
 
 
-def boltzmann_selection(population, distance_matrix, prob, T):
-    pop_size = len(population)
-    for i in range(pop_size):
-        pos = random.randint(0, pop_size-1)
-        f_i, f_pos = get_fitness(distance_matrix, population[i]), get_fitness(distance_matrix, population[pos])
-        prob_selecting_pos = 1 / (1 + np.exp(-(f_pos - f_i) / T))
-        if prob_selecting_pos >= prob:
-            population[i] = population[pos]
-    return population
+# def boltzmann_selection(population, distance_matrix, prob, T):
+#     pop_size = len(population)
+#     for i in range(pop_size):
+#         pos = random.randint(0, pop_size-1)
+#         f_i, f_pos = get_fitness(distance_matrix, population[i]), get_fitness(distance_matrix, population[pos])
+#         prob_selecting_pos = 1 / (1 + np.exp(-(f_pos - f_i) / T))
+#         if prob_selecting_pos >= prob:
+#             population[i] = population[pos]
+#     return population
 
 
 def order_one_crossover(population, prob, num_offsprings=1):
