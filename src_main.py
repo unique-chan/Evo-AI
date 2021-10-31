@@ -15,7 +15,7 @@ import numpy as np
 pop_size = 100
 gen_size = 6000
 crossover_prob = 0.9
-soft_tournament_prob = 0.7
+soft_tournament_prob = 0.5
 # boltzmann_prob = 0.8
 mutation_prob = 0.01
 elitism_ratio = 0.02
@@ -67,7 +67,7 @@ for i in range(gen_size):
 
     #########################################################################################################
     # selection option (B): tournament selection - soft version
-    #                                                   -> [opinion] great option for the given dataset!
+    #                                                   -> [opinion] very great option for the given dataset!
     # [Note] All the submission results (fitness-*.txt / fitness-*.png) are based on using (B)!
     utils.tournament_selection(P, D, soft_tournament_prob=soft_tournament_prob)
     #########################################################################################################
