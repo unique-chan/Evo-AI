@@ -3,12 +3,20 @@ import random
 import utils
 import numpy as np
 
-''' How to run?
+''' [How to run?]
 1) Install the python libraries as in requirements.txt
     pip install -r requirements.txt
 2) Then, run the code as follows:
     python src_main.py [file_path]
     e.g. python src_main.py data(TSP)/data-1.txt
+'''
+
+''' [Read me]
+ID: 20212047
+Name: 김예찬
+본 과제를 위해 다양한 조건에서 실험을 수행하였으며, 그 결과 'soft tournament selection' (p=0.5)일 때,
+전체 데이터셋에 대한 평균 Fitness 점수가 가장 좋은 것을 확인하였습니다 (전체 데이터셋에 대한 Fitness 평균: 약 2852.40).
+해당 실험 결과를 zip 파일에 함께 동봉하였습니다.
 '''
 
 # hyper-parameters
