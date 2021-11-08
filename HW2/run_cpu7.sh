@@ -1,0 +1,7 @@
+#python src_main.py 'data(TSP)/data-3.txt'
+#python src_main.py 'data(TSP)/data-7.txt'
+#python src_main.py 'data(TSP)/data-11.txt'
+#python src_main.py 'data(TSP)/data-15.txt'
+python src_main.py 'data(TSP)/data-19.txt'
+python src_main.py 'data(TSP)/data-23.txt'
+python src_main.py 'data(TSP)/data-27.txt'
