@@ -18,14 +18,10 @@ def init_population(population_size=100, individual_length=50):
 
 
 def get_fitness(chromosome):
-    '''
-    :return: fitness score
-             e.g. chromosome = array([1,1,1,0,0])
-                  -> fitness_score = max(1+1+1+0+0, (1-1)+(1-1)+(1-1)+(1-0)+(1-0))
-    '''
-    u = np.sum(chromosome)
-    bar_u = np.sum(1 - chromosome)
-    fitness = np.maximum(u, bar_u)
+    n = len(chromosome)
+    u = chromosome
+    bar_u = 1 - chromosome
+    fitness = np.maximum(u[:n//2], bar_u[:n//2]) + np.maximum(u[n//2:], bar_u[n//2:])
     return fitness
 
 
@@ -43,6 +39,10 @@ def store(population, filename='fourmax.txt'):
         f.write(txt)
 
 
+def is_promising_for_FourMax(cur, best):
+    return True if cur > best else False     # we want to find the optimal maximum.
+
+
 def elitism(population, fitnesses, elitism_ratio):
     num_elites = int(len(population) * elitism_ratio)
     top_ids = sorted(np.arange(len(fitnesses)), key=lambda i: fitnesses[i], reverse=False)[-num_elites:]
@@ -58,6 +58,48 @@ def elitism(population, fitnesses, elitism_ratio):
     fitnesses = fitnesses[num_elites:]
     return elite_chromosomes, population, fitnesses
 
+
+def tournament_selection(population, soft_tournament_prob=0):
+    '''
+    :param soft_tournament_prob:
+        if soft_tournament_prob <= 0:   'strict' tournament selection
+        otherwise:                      'soft' tournament selection (in general, soft_tournament_prob >= 0.5)
+    '''
+    pop_size = len(population)
+    for i in range(pop_size):
+        pos = random.randint(0, pop_size-1)
+        f_i, f_pos = get_fitness(population[i]), get_fitness(population[pos])
+        if soft_tournament_prob <= 0:                       # strict tournament
+            if is_promising_for_FourMax(f_pos, f_i):
+                population[i] = population[pos]
+        else:                                               # soft tournament
+            if is_promising_for_FourMax(f_pos, f_i):
+                if random.random() <= soft_tournament_prob:
+                    population[i] = population[pos]
+    return population
+
+
+def crossover(population, prob):
+    individual_length = len(population[0])
+    pop_size = len(population)
+    pop_size_half = pop_size // 2
+    random.shuffle(population)  # To address positional bias issue, shuffling is required before crossover.
+    for i in range(pop_size_half):
+        # 3-pt crossover
+        if random.random() <= prob:
+            positions = sorted(np.random.choice(list(range(0, individual_length)), size=3, replace=False))
+            dad, mom = population[i], population[i + pop_size_half]
+            offspring1 = dad[0:positions[0]] + mom[positions[0]:positions[1]] +\
+                         dad[positions[1]:positions[2]] + mom[positions[2]:]
+            offspring2 = mom[0:positions[0]] + dad[positions[0]:positions[1]] +\
+                         mom[positions[1]:positions[2]] + dad[positions[2]:]
+            population[i] = offspring1
+            population[i + pop_size_half] = offspring2
+
+def bitwise_mutation(population, prob):
+    for i, chromosome in enumerate(population):
+        mutate = ''
+        for
 
 # def roulette_selection(population, fitnesses, logarithmic_scaling_T=0):
 #     '''
@@ -79,25 +121,6 @@ def elitism(population, fitnesses, elitism_ratio):
 #         selections.append(population[j])
 #     return selections
 
-
-# def tournament_selection(population, distance_matrix, soft_tournament_prob=0):
-#     '''
-#     :param soft_tournament_prob:
-#         if soft_tournament_prob <= 0:   'strict' tournament selection
-#         otherwise:                      'soft' tournament selection (in general, soft_tournament_prob >= 0.5)
-#     '''
-#     pop_size = len(population)
-#     for i in range(pop_size):
-#         pos = random.randint(0, pop_size-1)
-#         f_i, f_pos = get_fitness(distance_matrix, population[i]), get_fitness(distance_matrix, population[pos])
-#         if soft_tournament_prob <= 0:                       # strict tournament
-#             if is_promising_for_salesman(f_pos, f_i):
-#                 population[i] = population[pos]
-#         else:                                               # soft tournament
-#             if is_promising_for_salesman(f_pos, f_i):
-#                 if random.random() <= soft_tournament_prob:
-#                     population[i] = population[pos]
-#     return population
 
 
 # def boltzmann_selection(population, distance_matrix, prob, T):

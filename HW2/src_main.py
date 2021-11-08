@@ -46,7 +46,7 @@ out_file = file.replace('data(TSP)/', '').replace('data-', 'fitness-')  # 'fitne
 
 best, avg_fitnesses, best_fitnesses = np.infty, [], []
 for i in range(gen_size):
-    # calculate fiteness scores for each chromosome in P
+    # calculate fitness scores for each chromosome in P
     fitnesses = [utils.get_fitness(D, chromosome) for chromosome in P]
     avg_fitness = sum(fitnesses) / len(fitnesses)
     avg_fitnesses.append(avg_fitness)
@@ -59,7 +59,7 @@ for i in range(gen_size):
         best = avg_fitness
     best_fitnesses.append(best)
 
-    # elitism (1): seperate elite strings from the population, P.
+    # elitism (1): separate elite strings from the population, P.
     elite_P, P, fitnesses = utils.elitism(P, fitnesses, elitism_ratio)
 
     # selection
