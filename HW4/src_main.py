@@ -44,14 +44,15 @@ for file_path in file_paths:
         fitnesses = [get_fitness_score(chromosome, symbol, data_gp) for chromosome in population]
         avg_fitness = sum(fitnesses) / len(fitnesses)
         avg_fitnesses.append(avg_fitness)
-        # if i % 50 == 0:
-        print(f'Iteration {i+1: 6d} - avg_fitness: {avg_fitness: .6f} - best: {best_fitness: .6f}')
 
         # store the current result if so far best
         if avg_fitness < best_fitness:  # in this task, fitness score (~= error) should be minimized.
             best_fitness = avg_fitness
             best_population = copy.deepcopy(population)
         best_fitnesses.append(best_fitness)
+
+        # log print
+        print(f'Iteration {i+1: 6d} - avg_fitness: {avg_fitness: .6f} - best: {best_fitness: .6f}')
 
         # selection
         tournament_selection(population, symbol, data_gp, soft_tournament_prob)
@@ -65,8 +66,8 @@ for file_path in file_paths:
     # get and visualize the best symbolic formula
     best_symbolic_formula, fitness = get_best_symbolic_formula(best_population, symbol, data_gp)
     print('best symbolic formula:')
-    visualize_tree(best_symbolic_formula)
+    visualize_tree(best_symbolic_formula, output_file=f'{file_path[:-4]} - formula.txt')
 
     # with given dataset, visualize the estimation result of the best symbolic formula
     prediction = [calculate(best_symbolic_formula, symbol, symbol_val=x) for x in data_gp['x']]
-    visualize_plot(data_gp, prediction, title=f'{file_path} \n- best fitness_score: {fitness}')
+    visualize_plot(data_gp, prediction, title=f'{file_path[:-4]} \n- best fitness_score: {fitness}')

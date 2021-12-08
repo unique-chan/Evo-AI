@@ -8,9 +8,15 @@ from anytree import Node, RenderTree, PostOrderIter
 from src_operators import *
 
 
-def visualize_tree(root: Node):
+def visualize_tree(root: Node, output_file: str = None):
     for pre, fill, node in RenderTree(root):
         print(f'{pre} {node.name}')
+
+    if output_file:
+        f = open(output_file, 'w')
+        for pre, fill, node in RenderTree(root):
+            f.write(f'{pre} {node.name} \n')
+        f.close()
 
 
 def generate_operands(symbol: str, num_symbol: int, num_constant: int, min_constant: int, max_constant: int) -> list:
