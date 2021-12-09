@@ -26,7 +26,7 @@ pop_size = args.pop_size
 gen_size = args.gen_size
 tree_depth_max = args.tree_depth_max
 
-soft_tournament_prob = 0.5
+soft_tournament_prob = 0.8
 crossover_prob = 0.9
 mutation_prob = 0.01
 
