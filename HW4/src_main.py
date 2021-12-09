@@ -10,12 +10,7 @@ from src_utils import *
 1) Install the python libraries as in requirements.txt
     pip install -r requirements.txt
 2) Run the code
-    python src_main.py
-'''
-
-''' [Read me]
-ID: 20212047
-Name: 김예찬
+    python src_main.py --file_path="data(gp)/data-gp1.txt" --pop_size=500 --gen_size=500 --tree_depth_max=15
 '''
 
 # parser

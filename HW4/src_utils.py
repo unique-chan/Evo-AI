@@ -1,6 +1,5 @@
 import random
 import copy
-import re
 
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -181,46 +180,10 @@ def crossover(population: list, crossover_prob: float = 0.9):
 
                 left_op, right_op = random.choice(left_bi_op_nodes), random.choice(right_bi_op_nodes)
                 left_op_parent, right_op_parent = copy.deepcopy(left_op.parent), copy.deepcopy(right_op.parent)
-                #
-                # print('*******************')
-                # visualize_tree(root_tree)
 
                 # cross-over
                 left_op.parent = right_op_parent
                 right_op.parent = left_op_parent
-
-                # print('*******************')
-                # visualize_tree(root_tree)
-
-
-                # op_nodes = [node for _, _, node in RenderTree(root_tree)
-                #             if node.name in bi_operators]
-                # if len(op_nodes) >= 2:
-                #     op_node1, op_node2 = random.sample(op_nodes, 2)
-                #     print(op_node1, op_node2)
-                #     op_node1_parent, op_node2_parent = copy.deepcopy(op_node1.parent), copy.deepcopy(op_node2.parent)
-                #
-                #     print('ㅅㅅ', op_node1_parent)
-                #     print('ㅂㅂ', root_tree)
-                #
-                #     if op_node1_parent in [root_tree, None] or op_node2_parent in [root_tree, None] or\
-                #             op_node1_parent in [op_node2_parent, op_node2] or \
-                #             op_node2_parent in [op_node1_parent, op_node1]:
-                #         # when we cross-over in this case, one node has three children, which causes a problem.
-                #         # i.e. this case: no cross-over is allowed.
-                #         print('ㅅㅅ')
-                #         continue
-                #
-                #     print('*' * 30)
-                #     visualize_tree(root_tree)
-                #     print('*' * 30)
-                #
-                #     op_node1.parent = op_node2_parent
-                #     op_node2.parent = op_node1_parent
-                #
-                #     print('=' * 30)
-                #     visualize_tree(root_tree)
-                #     print('=' * 30)
 
 
 def mutation(population: list, operands: list, mutation_prob: float = 0.01):
