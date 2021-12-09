@@ -3,7 +3,7 @@ import numpy as np
 ADD = 'add'
 SUB = 'sub'
 MUL = 'mul'
-POW = 'pow'
+# POW = 'pow'
 # EXP = 'exp'
 SIN = 'sin'
 COS = 'cos'
@@ -13,7 +13,7 @@ SQRT = 'sqrt_abs'       # no negative value is allowed!
 
 bi_operators = [ADD, SUB, MUL]
 # operators that require two operands.  (e.g. ADD(3, 4))
-uni_operators = [POW, SIN, COS, TAN, LOG, SQRT] * 2
+uni_operators = [SIN, COS, TAN, LOG, SQRT] + [SIN, COS, SIN, COS, SIN, COS]
 # operators that require one operand.   (e.g. POW(10))
 
 

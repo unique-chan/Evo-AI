@@ -8,9 +8,10 @@ from anytree import Node, RenderTree, PostOrderIter
 from src_operators import *
 
 
-def visualize_tree(root: Node, output_file: str = None):
-    for pre, fill, node in RenderTree(root):
-        print(f'{pre} {node.name}')
+def visualize_tree(root: Node, visualize: bool = True, output_file: str = None):
+    if visualize:
+        for pre, fill, node in RenderTree(root):
+            print(f'{pre} {node.name}')
 
     if output_file:
         f = open(output_file, 'w')
@@ -129,17 +130,23 @@ def calculate(root: Node, symbol: str = 'x', symbol_val: float = 1.0) -> float:
 
 
 def init_population(population_size: int, tree_depth_max: int, operands: list, symbol: str) -> list:
-    return [generate_random_symbol_tree(operands, tree_depth_max, symbol) for _ in range(population_size)]
+    return [generate_random_symbol_tree(operands=operands,
+                                        tree_depth_max=random.randint(tree_depth_max // random.choice([2, 3]),
+                                                                      tree_depth_max),
+                                        symbol=symbol)
+            for _ in range(population_size)]
 
 
-def get_fitness_score(tree: Node, symbol: str, data_gp: pd.DataFrame) -> int:
+def get_fitness_score(tree: Node, symbol: str, data_gp: pd.DataFrame) -> float:
     l1_error = 0
+    l2_error = 0
     for i in range(len(data_gp)):
         x = data_gp['x'][i]
         y = data_gp['y'][i]
         y_hat = calculate(tree, symbol, symbol_val=x)
         l1_error += abs(y - y_hat)
-    return l1_error
+        l2_error += (y - y_hat) ** 2
+    return 0.3 * l1_error + 0.7 * l2_error
 
 
 def tournament_selection(population: list, symbol: str, data_gp: pd.DataFrame, soft_tournament_prob: float = 0):
@@ -169,21 +176,22 @@ def crossover(population: list, crossover_prob: float = 0.9):
             root_tree = population[i]
             if root_tree.children[0] in bi_operators and \
                     root_tree.children[1] in bi_operators:
-                left_bi_op_nodes = [node for _, _, node in RenderTree(root_tree.children[0])
-                                    if node.name in bi_operators]
-                right_bi_op_nodes = [node for _, _, node in RenderTree(root_tree.children[1])
-                                     if node.name in bi_operators]
+                for _ in range(random.choice([1, 2, 3])):
+                    left_bi_op_nodes = [node for _, _, node in RenderTree(root_tree.children[0])
+                                        if node.name in bi_operators]
+                    right_bi_op_nodes = [node for _, _, node in RenderTree(root_tree.children[1])
+                                         if node.name in bi_operators]
 
-                if len(left_bi_op_nodes) == 0 or \
-                        len(right_bi_op_nodes) == 0:
-                    continue
+                    if len(left_bi_op_nodes) == 0 or \
+                            len(right_bi_op_nodes) == 0:
+                        continue
 
-                left_op, right_op = random.choice(left_bi_op_nodes), random.choice(right_bi_op_nodes)
-                left_op_parent, right_op_parent = copy.deepcopy(left_op.parent), copy.deepcopy(right_op.parent)
+                    left_op, right_op = random.choice(left_bi_op_nodes), random.choice(right_bi_op_nodes)
+                    left_op_parent, right_op_parent = copy.deepcopy(left_op.parent), copy.deepcopy(right_op.parent)
 
-                # cross-over
-                left_op.parent = right_op_parent
-                right_op.parent = left_op_parent
+                    # cross-over
+                    left_op.parent = right_op_parent
+                    right_op.parent = left_op_parent
 
 
 def mutation(population: list, operands: list, mutation_prob: float = 0.01):
