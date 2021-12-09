@@ -13,13 +13,12 @@ Evo-AI HW4: Genetic Programming (Find the symbolic formula!)
     - gen_size는 maximum generation size를 의미합니다.
     - tree_depth_max는 예측하고자 하는 함수 f(x)의 Symbolic Tree (계산식 트리)의 depth 최댓값을 의미합니다.
 
-[결과물 확인 방법]
-[0] 프로그램 실행이 종료되면, data(gp) 폴더 아래에 다음과 같은 파일이 형성됩니다.
-    1) "data-gp* - prediction.png" -> 실제 정답과 "Best Symbolic Formula의 예측 값"을 비교함.
-    2) "best-gp* - formula.txt" -> "Best Symbolic Formula" 결과가 저장됨. (트리 구조로 저장함.)
-    3) "data-gp* - fitnesses.png" -> 유전 알고리즘의 매 generation 마다의 fitness score 결과 값을 시각화함.
+[실험 결과 재현을 위한 셋팅 안내]
+1) python src_main.py --file_path="data(gp)/data-gp1.txt" --pop_size=500 --gen_size=500 --tree_depth_max=15
+2) python src_main.py --file_path="data(gp)/data-gp2.txt" --pop_size=500 --gen_size=500 --tree_depth_max=10
 
-[기타 유의사항]
+
+[유의사항]
 [0] 일반화를 위해, data-gp 파일의 y 축 값을 (y - mean / std) 수식으로 Z-score normalization 수행하였습니다.
 
 [1] 계산식 트리 구조의 경우, 직접 구현하는 대신 Python Anytree 라이브러리를 추가로 사용하였습니다.
@@ -63,6 +62,15 @@ Evo-AI HW4: Genetic Programming (Find the symbolic formula!)
     1) 이항 연산자는 반드시 이항 연산자로,
     2) 단항 연산자는 반드시 단항 연산자로 변이되도록 제한을 두었습니다.
     또, 랜덤하게 경우에 따라는 피연산자가 다른 피연산자로 변이되도록 제한을 두었습니다.
+
+[결과물 확인 방법]
+[0] 프로그램 실행이 종료되면, data(gp) 폴더 아래에 다음과 같은 파일이 형성됩니다.
+    1) "data-gp* - prediction.png" -> 실제 정답과 "Best Symbolic Formula의 예측 값"을 비교함.
+    2) "best-gp* - formula.txt" -> "Best Symbolic Formula" 결과가 저장됨. (트리 구조로 저장함.)
+        -> 유의사항: 실제 예측 값은 '위 수식'으로 계산한 값에
+                    y_mean을 곱하고 y_std을 더해야 합니다. (유의사항 0번 참고!!!)
+                    즉, 위 수식을 f라 하면, f(x) * y_mean + y_std ~= 실제 예측 값.
+    3) "data-gp* - fitnesses.png" -> 유전 알고리즘의 매 generation 마다의 fitness score 결과 값을 시각화함.
 
 Reference (참고한 논문)
 1. "Genetic programming and non-linear multiple regression techniques to predict back-break in blasting operation,"
