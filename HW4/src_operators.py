@@ -4,16 +4,17 @@ ADD = 'add'
 SUB = 'sub'
 MUL = 'mul'
 POW = 'pow'
-EXP = 'exp'
-LOG = 'log'
-SQRT = 'sqrt'
+# EXP = 'exp'
 SIN = 'sin'
 COS = 'cos'
-ATAN = 'atan'
+TAN = 'tan'
+LOG = 'log_abs'         # no negative value is allowed!
+SQRT = 'sqrt_abs'       # no negative value is allowed!
 
-
-bi_operators = [ADD, SUB, MUL]                          # operators that require two operands.  (e.g. ADD(3, 4))
-uni_operators = [POW, EXP, LOG, SQRT, SIN, COS, ATAN]   # operators that require one operand.   (e.g. POW(10))
+bi_operators = [ADD, SUB, MUL]
+# operators that require two operands.  (e.g. ADD(3, 4))
+uni_operators = [POW, SIN, COS, TAN, LOG, SQRT] * 2
+# operators that require one operand.   (e.g. POW(10))
 
 
 def add(left, right):
@@ -32,16 +33,18 @@ def pow(child):
     return child ** 2
 
 
-def exp(child):
-    return np.exp(child)
+# def exp(child):
+#     print('exp-child', child)
+#     return np.exp(child)
 
 
-def log(child):
-    return np.log(child)
+def log_abs(child):
+    return np.log(abs(child) + 1e-4)
+    # 1e-4 is added not to allow the case [log(0) = -infty].
 
 
-def sqrt(child):
-    return np.sqrt(child)
+def sqrt_abs(child):
+    return np.sqrt(abs(child))
 
 
 def sin(child):
@@ -52,5 +55,5 @@ def cos(child):
     return np.cos(child)
 
 
-def atan(child):
-    return np.arctanh(child)
+def tan(child):
+    return np.tanh(child)

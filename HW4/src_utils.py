@@ -1,5 +1,6 @@
 import random
 import copy
+import re
 
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -20,11 +21,15 @@ def visualize_tree(root: Node, output_file: str = None):
 
 
 def generate_operands(symbol: str, num_symbol: int, num_constant: int, min_constant: int, max_constant: int) -> list:
-    return [symbol] * num_symbol + [0.1] + list(np.linspace(min_constant, max_constant, num_constant - 1))
+    operands = [symbol] * num_symbol + list(np.linspace(min_constant, max_constant, num_constant - 1))
+    if 0 in operands:
+        operands.remove(0)  # if 0 exists, remove it.
+    return operands
 
 
-def __expand_root_node(operands: list, tree_depth_max: int, tree_depth_cur: int, root: Node, node_cur: Node):
-    def ____choice(candidates: list):
+def __expand_root_node(operands: list, tree_depth_max: int, tree_depth_cur: int, root: Node, node_cur: Node,
+                       symbol: str):
+    def ____choice(candidates: list, node_cur_name: str = None, symbol: str = 'x'):
         chosen = random.choice(candidates)
         if chosen == bi_operators:
             return random.choice(bi_operators)
@@ -37,22 +42,22 @@ def __expand_root_node(operands: list, tree_depth_max: int, tree_depth_cur: int,
         if node_cur.name in bi_operators:       # case (1-1): parent is bi-operator (such as +, -, *, ...)
                                                 # everything can be children and
                                                 # num of children must be 2.
-            # candidates = [bi_operators, uni_operators, operands]
-            candidates = [bi_operators, operands]
+            candidates = [bi_operators, uni_operators, operands]
+            # candidates = [bi_operators, operands]
             child1 = Node(____choice(candidates), parent=node_cur)
             child2 = Node(____choice(candidates), parent=node_cur)
             __expand_root_node(operands, tree_depth_max,
-                               tree_depth_cur=tree_depth_cur + 1, root=root, node_cur=child1)
+                               tree_depth_cur=tree_depth_cur + 1, root=root, node_cur=child1, symbol=symbol)
             __expand_root_node(operands, tree_depth_max,
-                               tree_depth_cur=tree_depth_cur + 1, root=root, node_cur=child2)
+                               tree_depth_cur=tree_depth_cur + 1, root=root, node_cur=child2, symbol=symbol)
         elif node_cur.name in uni_operators:    # case (1-2): parent is uni-operator (such as pow, exp, ...)
                                                 # everything can be children and
                                                 # num of children must be 1.
-            # candidates = [bi_operators, uni_operators, operands]
-            candidates = [bi_operators, operands]
-            child = Node(____choice(candidates), parent=node_cur)
+            candidates = [bi_operators, uni_operators, operands]
+            # candidates = [bi_operators, operands]
+            child = Node(____choice(candidates, node_cur.name), parent=node_cur)
             __expand_root_node(operands, tree_depth_max,
-                               tree_depth_cur=tree_depth_cur + 1, root=root, node_cur=child)
+                               tree_depth_cur=tree_depth_cur + 1, root=root, node_cur=child, symbol=symbol)
         else:                                   # case (1-3): parent is operand,
                                                 # children is not allowed.
             pass
@@ -64,29 +69,29 @@ def __expand_root_node(operands: list, tree_depth_max: int, tree_depth_cur: int,
             child1 = Node(____choice(candidates), parent=node_cur)
             child2 = Node(____choice(candidates), parent=node_cur)
             __expand_root_node(operands, tree_depth_max,
-                               tree_depth_cur=tree_depth_cur + 1, root=root, node_cur=child1)
+                               tree_depth_cur=tree_depth_cur + 1, root=root, node_cur=child1, symbol=symbol)
             __expand_root_node(operands, tree_depth_max,
-                               tree_depth_cur=tree_depth_cur + 1, root=root, node_cur=child2)
+                               tree_depth_cur=tree_depth_cur + 1, root=root, node_cur=child2, symbol=symbol)
         elif node_cur.name in uni_operators:    # case (2-2): parent is uni-operator (such as pow, exp, ...)
                                                 # only 'operand' can be children and
                                                 # num of children must be 1.
             candidates = [operands]
             child = Node(____choice(candidates), parent=node_cur)
             __expand_root_node(operands, tree_depth_max,
-                               tree_depth_cur=tree_depth_cur + 1, root=root, node_cur=child)
+                               tree_depth_cur=tree_depth_cur + 1, root=root, node_cur=child, symbol=symbol)
         else:                                   # case (2-3): parent is operand
                                                 # children is not allowed.
             pass
 
 
-def generate_random_symbol_tree(operands: list, tree_depth_max: int,
+def generate_random_symbol_tree(operands: list, tree_depth_max: int, symbol: str = 'x',
                                 visualize: bool = False) -> Node:
     # here, we only assume that root is always bi-operator.
     # initially, we generate root node (linking node).
     op = random.choice(bi_operators)
     root = Node(op)
     __expand_root_node(operands, tree_depth_max,
-                       tree_depth_cur=1, root=root, node_cur=root)
+                       tree_depth_cur=1, root=root, node_cur=root, symbol=symbol)
     if visualize:
         visualize_tree(root)
     return root
@@ -124,8 +129,8 @@ def calculate(root: Node, symbol: str = 'x', symbol_val: float = 1.0) -> float:
         print('stack:', stack)
 
 
-def init_population(population_size: int, tree_depth_max: int, operands: list) -> list:
-    return [generate_random_symbol_tree(operands, tree_depth_max) for _ in range(population_size)]
+def init_population(population_size: int, tree_depth_max: int, operands: list, symbol: str) -> list:
+    return [generate_random_symbol_tree(operands, tree_depth_max, symbol) for _ in range(population_size)]
 
 
 def get_fitness_score(tree: Node, symbol: str, data_gp: pd.DataFrame) -> int:
@@ -254,10 +259,21 @@ def get_best_symbolic_formula(population: list, symbol: str, data_gp: pd.DataFra
     return population[idx], lowest_error
 
 
-def visualize_plot(data_gp: pd.DataFrame, prediction: list, title: str):
+def visualize_prediction_plot(data_gp: pd.DataFrame, prediction: list, title: str):
     plt.title(title)
     plt.scatter(data_gp['x'], data_gp['y'], marker='x', label='Ground Truth')
     plt.scatter(data_gp['x'], prediction, marker='o', label='Prediction')
     plt.legend()
     plt.savefig(title.replace("\n", "") + '.png')
-    plt.show()
+    plt.clf()
+    # plt.show()
+
+
+def visualize_fitnesses_plot(best_avg_fitnesses: list, avg_fitnesses: list, title: str):
+    plt.title(title)
+    plt.plot(range(1, len(best_avg_fitnesses) + 1), np.array(best_avg_fitnesses), label="Best avg fitnesses")
+    plt.plot(range(1, len(avg_fitnesses) + 1), np.array(avg_fitnesses), label="Avg fitnesses")
+    plt.legend()
+    plt.savefig(title.replace("\n", "") + '.png')
+    plt.clf()
+    # plt.show()
