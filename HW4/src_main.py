@@ -91,7 +91,8 @@ visualize_fitnesses_plot(best_avg_fitnesses, avg_fitnesses,
 # get and visualize the best symbolic formula
 best_symbolic_formula, fitness = get_best_symbolic_formula(best_population, symbol, data_gp)
 print('best symbolic formula:')
-visualize_tree(best_symbolic_formula, output_file=f'{file_path[:-4]} - formula.txt')
+visualize_tree(best_symbolic_formula, output_file=f'{file_path[:-4]} - formula.txt',
+               y_mean=y_mean, y_std=y_std)
 
 # with given dataset, visualize the estimation result of the best symbolic formula
 prediction = [calculate(best_symbolic_formula, symbol, symbol_val=x) for x in data_gp['x']]

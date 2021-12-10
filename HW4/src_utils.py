@@ -8,7 +8,8 @@ from anytree import Node, RenderTree, PostOrderIter
 from src_operators import *
 
 
-def visualize_tree(root: Node, visualize: bool = True, output_file: str = None):
+def visualize_tree(root: Node, visualize: bool = True, output_file: str = None,
+                   y_mean: float = None, y_std: float = None):
     if visualize:
         for pre, fill, node in RenderTree(root):
             print(f'{pre} {node.name}')
@@ -17,6 +18,9 @@ def visualize_tree(root: Node, visualize: bool = True, output_file: str = None):
         f = open(output_file, 'w')
         for pre, fill, node in RenderTree(root):
             f.write(f'{pre} {node.name} \n')
+        if y_mean and y_std:
+            f.write(f'위 수식 f(x)으로 계산한 결과에, {y_mean} (y_mean)을 곱하고 {y_std} (y_std)을 더한 값이 \n'
+                    f'실제 스케일에 해당하는 예측 값입니다. (즉, prediction = f(x) * y_mean + y_std)')
         f.close()
 
 
