@@ -65,12 +65,10 @@ for i in range(gen_size):
     print(f"Iteration {i+1: 6d} - avg_fitness: {avg_fitness: .6f} - best_avg_fitness: {best_avg_fitness: .6f} "
           f"- best_model's fitness: {fitness}")
 
-    # 임시 코드 ###############
-    prediction = [calculate(_, symbol, symbol_val=x) for x in data_gp['x']]
-    visualize_prediction_plot(data_gp, prediction, title=f'{file_path[:-4]} \n- best fitness_score: {fitness}')
-    visualize_tree(_, visualize=False, output_file=f'{file_path[:-4]} - formula.txt')
-
-    ##########################
+    # temp code
+    # prediction = [calculate(_, symbol, symbol_val=x) for x in data_gp['x']]
+    # visualize_prediction_plot(data_gp, prediction, title=f'{file_path[:-4]} \n- best fitness_score: {fitness}')
+    # visualize_tree(_, visualize=False, output_file=f'{file_path[:-4]} - formula.txt')
 
     # selection
     tournament_selection(population, symbol, data_gp, soft_tournament_prob)

@@ -66,7 +66,7 @@ Evo-AI HW4: Genetic Programming (Find the symbolic formula!)
 [결과물 확인 방법]
 [0] 프로그램 실행이 종료되면, data(gp) 폴더 아래에 다음과 같은 파일이 형성됩니다.
     1) "data-gp* - prediction.png" -> 실제 정답과 "Best Symbolic Formula의 예측 값"을 비교함.
-    2) "best-gp* - formula.txt" -> "Best Symbolic Formula" 결과가 저장됨. (트리 구조로 저장함.)
+    2) "data-gp* - formula.txt" -> "Best Symbolic Formula" 결과가 저장됨. (트리 구조로 저장함.)
         -> 유의사항: 실제 예측 값은 '위 수식'으로 계산한 값에
                     y_mean을 곱하고 y_std을 더해야 합니다. (유의사항 0번 참고!!!)
                     즉, 위 수식을 f라 하면, f(x) * y_mean + y_std ~= 실제 예측 값.
