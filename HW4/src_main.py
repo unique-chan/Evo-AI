@@ -6,6 +6,11 @@ import pandas as pd
 from src_operators import *
 from src_utils import *
 
+''' [Note]
+Please read 'readme.txt' before scoring!
+채점 전 'readme.txt' 파일을 확인해주시면 감사하겠습니다. - 20212047 김예찬 드림.
+'''
+
 ''' [How to run?]
 1) Install the python libraries as in requirements.txt
     pip install -r requirements.txt
